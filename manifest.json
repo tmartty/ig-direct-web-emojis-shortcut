@@ -1,0 +1,28 @@
+{
+    "manifest_version": 2,
+    "version": "1.0",
+    "name": "IG Direct Emojis Shortcuts",
+    "description": "Like in WhatsApp Web, type ':' and see a shortcut for emojis to type in Instagram Direct messages in the browser",
+    "icons": {
+        // "128": "icon_16.png",
+        // "128": "icon_32.png",
+        // "128": "icon_48.png",
+        // "128": "icon_128.png"
+    },
+    // "background": {
+    // "persistent": false,
+    // "scripts": ["background_script.js"]
+    // },
+    // "browser_action": {
+    //     "default_icon": "icon_16.png",
+    //     "default_popup": "popup.html"
+    // },
+    "permissions": ["https://*.instagram.com/direct/*", "activeTab"],
+    "content_scripts": [
+        {
+            "matches": ["https://*.instagram.com/direct/*"],
+            "css": ["styles.css"],
+            "js": ["contentScript.js"]
+        }
+    ]
+}
