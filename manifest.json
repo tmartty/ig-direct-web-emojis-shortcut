@@ -17,10 +17,11 @@
     //     "default_icon": "icon_16.png",
     //     "default_popup": "popup.html"
     // },
-    "permissions": ["https://*.instagram.com/direct/*", "activeTab"],
+    "permissions": ["https://*.instagram.com/*", "activeTab"],
     "content_scripts": [
         {
-            "matches": ["https://*.instagram.com/direct/*"],
+            "matches": ["https://*.instagram.com/*"],
+            "all_frames": true,
             "css": ["styles.css"],
             "js": ["contentScript.js"]
         }
