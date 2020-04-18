@@ -1,62 +1,101 @@
 console.log("EXTENSION LOADED");
 
+var typedShortcut;
+var suggestions = {};
+
 const emojis = {
     hola: "👋",
-    bye: "👋",
-    hello: "👋",
+    rocket: "🚀",
+    house: "🏠",
 };
+
+function removeSuggestions() {
+    if (document.getElementById("emojiSuggestionsDialog"))
+        document.getElementById("emojiSuggestionsDialog").remove();
+    suggestions = {};
+}
 
 function searchEmoji(event) {
     // exit if not in Instagram Direct url
     if (!window.location.pathname.includes("direct")) return;
     var textarea = document.getElementsByTagName("textarea")[0];
-
     // exit if there's no textarea
     if (!textarea) return;
     const lastWordInString = textarea.value.split(" ").slice(-1)[0];
 
     // exit if last word in string is shorter than 2 characters to avoid triggering on ":" string
     if (lastWordInString.length < 2) {
-        if (document.getElementById("emojiSuggestionsDialog"))
-            document.getElementById("emojiSuggestionsDialog").remove();
+        removeSuggestions();
         return;
     }
     var shouldShowEmojis = lastWordInString.charAt(0) == ":";
 
     // exit if last word doesn't start with colon
     if (!shouldShowEmojis) {
-        if (document.getElementById("emojiSuggestionsDialog"))
-            document.getElementById("emojiSuggestionsDialog").remove();
+        removeSuggestions();
         return;
     }
 
+    // exit if other keys were pressed but the string remains the same. For example when pressing Tab
+    if (typedShortcut && typedShortcut === lastWordInString.substr(1)) return;
+    typedShortcut = lastWordInString.substr(1);
+
+    var newSuggestions = {};
+
     // search if in array
-    var suggestions = {};
-    var propertyNames = Object.keys(emojis).filter(function(propertyName) {
-        if (propertyName.indexOf(lastWordInString.substr(1)) === 0)
+    Object.keys(emojis).forEach((propertyName) => {
+        if (
+            propertyName.indexOf(lastWordInString.substr(1)) === 0 &&
+            typeof suggestions[propertyName] == "undefined"
+        ) {
             suggestions[propertyName] = emojis[propertyName];
+            newSuggestions[propertyName] = emojis[propertyName];
+        }
     });
+
     console.log(suggestions);
+    console.log(newSuggestions);
+
+    // to-do: remove suggestions when they are no longer valid
+
     // get emoji from hashmap
-    if (Object.keys(suggestions).length) {
+    if (Object.keys(newSuggestions).length) {
+        var dialogElement;
         if (document.getElementById("emojiSuggestionsDialog")) {
-            var dialogElement = document.getElementById(
-                "emojiSuggestionsDialog"
-            );
+            dialogElement = document.getElementById("emojiSuggestionsDialog");
         } else {
-            var dialogElement = document.createElement("div");
+            dialogElement = document.createElement("div");
             dialogElement.id = "emojiSuggestionsDialog";
             dialogElement.style.background = "#f0f0f0";
+            dialogElement.style.display = "flex";
+            dialogElement.style["flex-direction"] = "row";
         }
-        dialogElement.innerHTML = Object.values(suggestions);
+
+        Object.values(newSuggestions).forEach((emoji) => {
+            var button = document.createElement("button");
+            button.innerHTML = emoji;
+            button.onclick = function() {
+                textarea.value = textarea.value.replace(
+                    textarea.value.split(" ").slice(-1)[0],
+                    emoji + " "
+                );
+                removeSuggestions();
+                textarea.focus();
+            };
+            dialogElement.appendChild(button);
+        });
         textarea.parentElement.appendChild(dialogElement);
-        // to-do: make dialog navigatable
-        // to-do: replace shortcut with emoji and remove suggestions dialog
-        // textarea.value = textarea.value.replace(":hola", "👋🏼");
     } else {
-        console.log("REMOVE DIALOG");
-        if (document.getElementById("emojiSuggestionsDialog"))
-            document.getElementById("emojiSuggestionsDialog").remove();
+        var shouldRemoveDialog = true;
+        Object.keys(suggestions).forEach((propertyName) => {
+            if (propertyName.indexOf(lastWordInString.substr(1)) === 0) {
+                shouldRemoveDialog = false;
+            }
+        });
+        if (shouldRemoveDialog) {
+            console.log("REMOVE DIALOG");
+            removeSuggestions();
+        }
     }
 }
 
