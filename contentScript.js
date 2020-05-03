@@ -3,17 +3,17 @@ var suggestions = new Set();
 
 const emojis = new Map();
 
-emojis.set("🕶", "darksunglasses");
-emojis.set("🌴", "palmtree");
-emojis.set("🤒", "facewiththermometer");
-emojis.set("🏠", "house");
-emojis.set("🎯", "dart");
-emojis.set("😄", "smile");
-emojis.set("😆", "laughing");
-emojis.set("😊", "blush");
-emojis.set("😃", "smiley");
-emojis.set("☺️", "relaxed");
-emojis.set("😏", "smirk");
+emojis.set("🕶", "darksunglasses anteojosdesol");
+emojis.set("🌴", "palmtree palmera");
+emojis.set("🤒", "facewiththermometer sick enfermo");
+emojis.set("🏠", "house casa");
+emojis.set("🎯", "dart dardo");
+emojis.set("😄", "smile sonrisa");
+emojis.set("😆", "laughing reir");
+emojis.set("😊", "blush sonreir");
+emojis.set("😃", "smiley sonreir");
+emojis.set("☺️", "relaxed relajado");
+emojis.set("😏", "smirk jeje");
 emojis.set("😍", "hearteyes");
 emojis.set("😘", "kissingheart");
 emojis.set("😚", "kissingclosedeyes");
@@ -1498,8 +1498,8 @@ emojis.set("🇿🇼", "zimbabwe");
 emojis.set("🤐", "zippermouthface");
 
 function removeSuggestions() {
-    if (document.getElementById("emojiSuggestionsDialog"))
-        document.getElementById("emojiSuggestionsDialog").remove();
+    if (document.getElementById("emojiSuggestionsContainer"))
+        document.getElementById("emojiSuggestionsContainer").remove();
     suggestions = new Set();
 }
 
@@ -1541,11 +1541,13 @@ function searchEmoji(event) {
     // get emoji from hashmap
     if (suggestions.size) {
         var dialogElement;
-        if (document.getElementById("emojiSuggestionsDialog")) {
-            dialogElement = document.getElementById("emojiSuggestionsDialog");
+        if (document.getElementById("emojiSuggestionsContainer")) {
+            dialogElement = document.getElementById(
+                "emojiSuggestionsContainer"
+            );
         } else {
             dialogElement = document.createElement("div");
-            dialogElement.id = "emojiSuggestionsDialog";
+            dialogElement.id = "emojiSuggestionsContainer";
             dialogElement.style.background = "#f0f0f0";
             dialogElement.style.display = "flex";
             dialogElement.style["flex-direction"] = "row";
@@ -1590,3 +1592,44 @@ function searchEmoji(event) {
 }
 
 document.addEventListener("keyup", searchEmoji, false);
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+        switch (event.key) {
+            case "Escape":
+                removeSuggestions();
+                document.getElementsByTagName("textarea")[0].focus();
+                break;
+            case "ArrowUp":
+                if (
+                    document.activeElement.parentElement.id ==
+                    "emojiSuggestionsContainer"
+                )
+                    document.activeElement.nextElementSibling.focus();
+                break;
+            case "ArrowRight":
+                if (
+                    document.activeElement.parentElement.id ==
+                    "emojiSuggestionsContainer"
+                )
+                    document.activeElement.nextElementSibling.focus();
+                break;
+            case "ArrowDown":
+                if (
+                    document.activeElement.parentElement.id ==
+                    "emojiSuggestionsContainer"
+                )
+                    document.activeElement.previousElementSibling.focus();
+                break;
+            case "ArrowLeft":
+                if (
+                    document.activeElement.parentElement.id ==
+                    "emojiSuggestionsContainer"
+                )
+                    document.activeElement.previousElementSibling.focus();
+                break;
+        }
+    },
+    false
+);
