@@ -1,18 +1,17 @@
 console.log("EXTENSION LOADED");
 
 var typedShortcut;
-var suggestions = {};
+var suggestions = new Set();
 
-const emojis = {
-    hola: "👋",
-    rocket: "🚀",
-    house: "🏠",
-};
+const emojis = new Map();
+emojis.set("👋", "bye hola");
+emojis.set("🚀", "rocket");
+emojis.set("🏠", "house casa");
 
 function removeSuggestions() {
     if (document.getElementById("emojiSuggestionsDialog"))
         document.getElementById("emojiSuggestionsDialog").remove();
-    suggestions = {};
+    suggestions = new Set();
 }
 
 function searchEmoji(event) {
@@ -28,6 +27,7 @@ function searchEmoji(event) {
         removeSuggestions();
         return;
     }
+
     var shouldShowEmojis = lastWordInString.charAt(0) == ":";
 
     // exit if last word doesn't start with colon
@@ -40,26 +40,19 @@ function searchEmoji(event) {
     if (typedShortcut && typedShortcut === lastWordInString.substr(1)) return;
     typedShortcut = lastWordInString.substr(1);
 
-    var newSuggestions = {};
-
     // search if in array
-    Object.keys(emojis).forEach((propertyName) => {
-        if (
-            propertyName.indexOf(lastWordInString.substr(1)) === 0 &&
-            typeof suggestions[propertyName] == "undefined"
-        ) {
-            suggestions[propertyName] = emojis[propertyName];
-            newSuggestions[propertyName] = emojis[propertyName];
+    emojis.forEach((possibleValues, emoji) => {
+        if (possibleValues.indexOf(lastWordInString.substr(1)) !== -1) {
+            if (!suggestions.has(emoji)) suggestions.add(emoji);
+        } else {
+            suggestions.delete(emoji);
         }
     });
 
-    console.log(suggestions);
-    console.log(newSuggestions);
-
-    // to-do: remove suggestions when they are no longer valid
+    console.log("Suggestions :", suggestions);
 
     // get emoji from hashmap
-    if (Object.keys(newSuggestions).length) {
+    if (suggestions.size) {
         var dialogElement;
         if (document.getElementById("emojiSuggestionsDialog")) {
             dialogElement = document.getElementById("emojiSuggestionsDialog");
@@ -70,32 +63,38 @@ function searchEmoji(event) {
             dialogElement.style.display = "flex";
             dialogElement.style["flex-direction"] = "row";
         }
-
-        Object.values(newSuggestions).forEach((emoji) => {
-            var button = document.createElement("button");
-            button.innerHTML = emoji;
-            button.onclick = function() {
-                textarea.value = textarea.value.replace(
-                    textarea.value.split(" ").slice(-1)[0],
-                    emoji + " "
-                );
-                removeSuggestions();
-                textarea.focus();
-            };
-            dialogElement.appendChild(button);
-        });
         textarea.parentElement.appendChild(dialogElement);
-    } else {
-        var shouldRemoveDialog = true;
-        Object.keys(suggestions).forEach((propertyName) => {
-            if (propertyName.indexOf(lastWordInString.substr(1)) === 0) {
-                shouldRemoveDialog = false;
+        // remove old existing suggestion btns if they are no longer valid
+        var existingEmojiButtons = document.querySelectorAll('*[id^="emoji-"]');
+        existingEmojiButtons.forEach((existingEmojiButton) => {
+            if (!suggestions.has(existingEmojiButton.innerHTML))
+                existingEmojiButton.remove();
+        });
+        // iterate over suggestions and create the suggestion btn if it doesnt already existe
+        suggestions.forEach((emoji) => {
+            if (document.getElementById(`emoji-${emoji}`)) {
+                return;
+            } else {
+                var button = document.createElement("button");
+                button.id = `emoji-${emoji}`;
+                button.innerHTML = emoji;
+                button.style.border = "none";
+                button.style.height = "35px";
+                button.style.width = "35px";
+                button.style.padding = "0px";
+                button.onclick = function() {
+                    textarea.value = textarea.value.replace(
+                        textarea.value.split(" ").slice(-1)[0],
+                        emoji + " "
+                    );
+                    removeSuggestions();
+                    textarea.focus();
+                };
+                dialogElement.appendChild(button);
             }
         });
-        if (shouldRemoveDialog) {
-            console.log("REMOVE DIALOG");
-            removeSuggestions();
-        }
+    } else {
+        removeSuggestions();
     }
 }
 
