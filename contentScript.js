@@ -1548,11 +1548,13 @@ function searchEmoji(event) {
         } else {
             dialogElement = document.createElement("div");
             dialogElement.id = "emojiSuggestionsContainer";
-            dialogElement.style.background = "#f0f0f0";
+            dialogElement.style.background = "rgb(239, 239, 239)";
             dialogElement.style.display = "flex";
             dialogElement.style["flex-direction"] = "row";
             dialogElement.style["max-width"] = "430px";
             dialogElement.style["overflow-x"] = "auto";
+            dialogElement.style["margin-bottom"] = "5px";
+            dialogElement.style["border-radius"] = "10px";
         }
         textarea.parentElement.appendChild(dialogElement);
         // remove old existing suggestion btns if they are no longer valid
@@ -1569,12 +1571,17 @@ function searchEmoji(event) {
                 var button = document.createElement("button");
                 button.id = `emoji-${emoji}`;
                 button.innerHTML = emoji;
-                button.style.border = "none";
                 button.style["min-height"] = "35px";
                 button.style["min-width"] = "35px";
-                button.style.width = "35px";
+                button.style["max-height"] = "35px";
+                button.style["max-width"] = "35px";
+                button.style["border-radius"] = "10px";
+                button.style.height = "35px";
                 button.style.width = "35px";
                 button.style.padding = "0px";
+                button.style.border = "none";
+                button.style.outline = "0";
+                button.style.background = "rgb(239, 239, 239)";
                 button.onclick = function() {
                     textarea.value = textarea.value.replace(
                         textarea.value.split(" ").slice(-1)[0],
@@ -1601,31 +1608,35 @@ document.addEventListener(
                 removeSuggestions();
                 document.getElementsByTagName("textarea")[0].focus();
                 break;
-            case "ArrowUp":
+            case "ArrowDown":
                 if (
                     document.activeElement.parentElement.id ==
-                    "emojiSuggestionsContainer"
+                        "emojiSuggestionsContainer" &&
+                    document.activeElement.nextElementSibling
                 )
                     document.activeElement.nextElementSibling.focus();
                 break;
             case "ArrowRight":
                 if (
                     document.activeElement.parentElement.id ==
-                    "emojiSuggestionsContainer"
+                        "emojiSuggestionsContainer" &&
+                    document.activeElement.nextElementSibling
                 )
                     document.activeElement.nextElementSibling.focus();
                 break;
-            case "ArrowDown":
+            case "ArrowUp":
                 if (
                     document.activeElement.parentElement.id ==
-                    "emojiSuggestionsContainer"
+                        "emojiSuggestionsContainer" &&
+                    document.activeElement.previousElementSibling
                 )
                     document.activeElement.previousElementSibling.focus();
                 break;
             case "ArrowLeft":
                 if (
                     document.activeElement.parentElement.id ==
-                    "emojiSuggestionsContainer"
+                        "emojiSuggestionsContainer" &&
+                    document.activeElement.previousElementSibling
                 )
                     document.activeElement.previousElementSibling.focus();
                 break;

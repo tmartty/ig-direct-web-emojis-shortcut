@@ -1,0 +1,19 @@
+#emojiSuggestionsContainer button {
+    /*background: red;*/
+}
+
+#emojiSuggestionsContainer button:focus,
+#emojiSuggestionsContainer button::-moz-focus-inner {
+    background: rgb(219, 219, 219) !important;
+    border: none !important;
+    outline: 0 !important;
+}
+
+#emojiSuggestionsContainer button:focus,
+#emojiSuggestionsContainer button:focus-inner,
+#emojiSuggestionsContainer button:hover,
+#emojiSuggestionsContainer button:active,
+#emojiSuggestionsContainer button::-moz-focus-inner {
+    border: none !important;
+    outline: 0 !important;
+}
