@@ -1552,6 +1552,7 @@ function searchEmoji(event) {
             dialogElement.style.display = "flex";
             dialogElement.style["flex-direction"] = "row";
             dialogElement.style["max-width"] = "430px";
+            dialogElement.style["max-height"] = "35px";
             dialogElement.style["overflow-x"] = "auto";
             dialogElement.style["margin-bottom"] = "5px";
             dialogElement.style["border-radius"] = "10px";
