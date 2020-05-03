@@ -22,7 +22,6 @@
         {
             "matches": ["https://*.instagram.com/*"],
             "all_frames": true,
-            "css": ["styles.css"],
             "js": ["contentScript.js"]
         }
     ]
